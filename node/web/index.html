@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Management</title>
+    <link rel="stylesheet" href="/web/styles.css">
+</head>
+<body style="user-select:none;">
+    <div id="robot" style="pointer-events:none;" draggable="false">
+        <div id="robotx" draggable="false"></div>
+    </div>
+    <div id="map" style="border:1px solid black;display:inline-block;"></div>
+    <div id="control" style="border:1px solid black;width:400px;height:400px;display:inline-block;">
+        <div style="width:50%;height:100%;border-right:1px solid black;pointer-events: none;"></div>
+        <div style="width:100%;height:50%;border-bottom:1px solid black;pointer-events: none;margin-top:-100%;"></div>
+    </div>
+    <br>
+    Use Mecanum Horizontal Movement
+    <input type="checkbox" id="horz"/>
+    <div id="controlpanel">
+        <button class="move" data-s="0,0,0.1">TL</button>
+        <button class="move" data-s="0.1,0,0">FW</button>
+        <button class="move" data-s="0,0,-0.1">TR</button>
+        <br>
+        <button class="move" data-s="0,0.1,0">SL</button>
+        <button class="move" data-s="!">ST</button>
+        <button class="move" data-s="0,-0.1,0">SR</button>
+        <br>
+        <button class="move" style="opacity:0;pointer-events: none;">BK</button>
+        <button class="move" data-s="-0.1,0,0">BK</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8" src="/web/script.js"></script>
+</body>
+</html>
