@@ -8,6 +8,7 @@ const robot = document.getElementById("robot")
 const control = document.getElementById("control")
 const horz = document.getElementById("horz")
 const ctrlpn = document.getElementById("controlpanel")
+const goal = document.getElementById("goal")
 
 window.ondragstart = ()=>false;
 
@@ -31,6 +32,9 @@ socket.on('connect', ()=>{
         robot.style.left = `${(parseFloat(b.y)-originY)/mapRes}px`
         robot.style.transform = `rotate(${-parseFloat(b.r)}rad) translate(-50%,-50%)`
     })
+    socket.on("ping",()=>{
+        console.log("received ping event")
+    })
 });
 
 function element_offsets(e) {
@@ -43,23 +47,39 @@ function element_offsets(e) {
 }
 
 var lastclick;
+var lcX = -1;
+var lcY;
 
 img.addEventListener("mousedown",(e)=>{
     e.stopPropagation();
     console.log("down");
+    let ofs = element_offsets(img);
+    lcX = e.pageX - ofs.left;
+    lcY = e.pageY - ofs.top;
     lastclick = e;
+    goal.hidden = false;
+    goal.style.left = `${lcX}px`;
+    goal.style.top = `${lcY}px`;
+    goal.style.transform = `translate(-50%, -100%)`
 })
+
+addEventListener("mousemove",(r)=>{
+    if (lcX != -1) {
+        let xd = r.pageX - lastclick.pageX;
+        let yd = r.pageY - lastclick.pageY;
+        let angle = Math.atan2(xd, yd);
+        goal.style.transform = `translate(-50%, -100%) rotate(${-angle + Math.PI}rad)`
+    }
+})
+
 let f = (r) => {
     console.log("up")
-    let ofs = element_offsets(img);
-    let x = lastclick.pageX - ofs.left;
-    let y = lastclick.pageY - ofs.top;
     let xd = r.pageX - lastclick.pageX;
     let yd = r.pageY - lastclick.pageY;
     let angle = Math.atan2(xd, yd);
-    console.log(x,mapRes,originX);
-    console.log(x*mapRes+originX,"e", y*mapRes+originY,"e", angle);
-    socket.emit("goal", { x: x * mapRes + originX, y: y * mapRes + originY, z: 1.0, ox: 0.0, oy: 0.0, oz: Math.sin(angle / 2), ow: Math.cos(angle / 2) })
+    goal.style.transform = `translate(-50%, -100%) rotate(${-angle+Math.PI}rad)`
+    socket.emit("goal", { x: lcX * mapRes + originX, y: lcY * mapRes + originY, z: 1.0, ox: 0.0, oy: 0.0, oz: Math.sin(angle / 2), ow: Math.cos(angle / 2) })
+    lcX = -1
 }
 img.addEventListener("mouseup",f);
 

@@ -37,6 +37,11 @@ def goal(d):
     ros2serv.goals.put(d)
     # threading.Thread(target=goalsender.main,kwargs=d).start()
 
+@socketio.on("ping")
+def ping():
+    print("received ping event")
+    flask_socketio.emit("ping")
+
 @socketio.on("vel")
 def vel(d):
     ros2serv.vels.put(d)
